@@ -82,7 +82,6 @@ module Rubber
         end
 
         response.each do |item|
-          puts item.inspect
           instance = {}
           instance[:id] = item.id
           instance[:state] = item.state
