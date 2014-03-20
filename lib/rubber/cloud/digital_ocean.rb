@@ -56,11 +56,17 @@ module Rubber
           end
         end
 
+        additional = {
+            private_networking: @env['private_networking'],
+            backups_enabled: @env['backups_enabled'],
+        }
+
+
         response = compute_provider.servers.create(:name => "#{Rubber.env}-#{instance_alias}",
                                                    :image_id => image.id,
                                                    :flavor_id => flavor.id,
                                                    :region_id => do_region.id,
-                                                   :ssh_key_ids => [ssh_key['id']])
+                                                   :ssh_key_ids => [ssh_key['id']].merge(additional))
 
         response.id
       end
@@ -76,12 +82,13 @@ module Rubber
         end
 
         response.each do |item|
+          puts item.inspect
           instance = {}
           instance[:id] = item.id
           instance[:state] = item.state
           instance[:type] = item.flavor_id
-          instance[:external_ip] = item.public_ip_address
-          instance[:internal_ip] = item.public_ip_address
+          instance[:external_ip] = item.ip_address
+          instance[:internal_ip] = item.private_ip_address
           instance[:region_id] = item.region_id
           instance[:provider] = 'digital_ocean'
           instance[:platform] = Rubber::Platforms::LINUX
