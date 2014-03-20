@@ -62,11 +62,11 @@ module Rubber
         }
 
 
-        response = compute_provider.servers.create(:name => "#{Rubber.env}-#{instance_alias}",
+        response = compute_provider.servers.create({:name => "#{Rubber.env}-#{instance_alias}",
                                                    :image_id => image.id,
                                                    :flavor_id => flavor.id,
                                                    :region_id => do_region.id,
-                                                   :ssh_key_ids => [ssh_key['id']].merge(additional))
+                                                   :ssh_key_ids => [ssh_key['id']]}.merge(additional))
 
         response.id
       end
